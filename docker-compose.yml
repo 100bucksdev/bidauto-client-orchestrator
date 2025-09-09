@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  client-side:
+    image: ghcr.io/100bucksdev/bid-auto-client-side:dev
+    ports:
+      - '3000:3000'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  user-side:
+    image: ghcr.io/100bucksdev/bid-auto-user-panel:prod
+    ports:
+      - '3001:80'
+
+  nginx:
+    image: nginx:1.25-alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - '80:80'
+    depends_on:
+      - client-side
+      - user-side
