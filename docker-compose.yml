@@ -9,9 +9,18 @@ services:
       - 'host.docker.internal:host-gateway'
 
   user-side:
-    image: ghcr.io/100bucksdev/bid-auto-user-panel:prod
+    image: ghcr.io/100bucksdev/bid-auto-user-panel:dev
     ports:
       - '3001:80'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  admin-side:
+    image: ghcr.io/100bucksdev/bid-auto-admin-panel:dev
+    ports:
+      - '3002:80'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
 
   nginx:
     image: nginx:1.25-alpine
@@ -22,3 +31,4 @@ services:
     depends_on:
       - client-side
       - user-side
+      - admin-side
