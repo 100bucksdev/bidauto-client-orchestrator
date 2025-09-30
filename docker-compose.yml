@@ -5,30 +5,32 @@ services:
     image: ghcr.io/100bucksdev/bid-auto-client-side:dev
     ports:
       - '3000:3000'
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
 
   user-side:
-    image: ghcr.io/100bucksdev/bid-auto-user-panel:dev
-    ports:
-      - '3001:80'
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
+    image: ghcr.io/100bucksdev/bid-auto-user-part:dev
+    command: >
+      sh -c "rm -rf /export/user/* && mkdir -p /export/user && cp -r /usr/share/nginx/html/* /export/user && tail -f /dev/null"
+    volumes:
+      - user_build:/export
 
-  admin-side:
-    image: ghcr.io/100bucksdev/bid-auto-admin-panel:dev
-    ports:
-      - '3002:80'
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
+  # admin-side:
+  #   image: ghcr.io/100bucksdev/bid-auto-admin-side:dev
+  #   volumes:
+  #     - admin_build:/usr/share/nginx/html/admin:ro
 
   nginx:
     image: nginx:1.25-alpine
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - user_build:/usr/share/nginx/html/user:ro
+      # - admin_build:/usr/share/nginx/html/admin:ro
     ports:
       - '80:80'
     depends_on:
       - client-side
       - user-side
-      - admin-side
+      # - admin-side
+
+volumes:
+  user_build:
+  # admin_build:
