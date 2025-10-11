@@ -14,7 +14,7 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
 
   client-side:
-    image: ghcr.io/100bucksdev/bid-auto-client-side:dev
+    image: ghcr.io/100bucksdev/bid-auto-client-side:prod
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.client.rule=PathPrefix(`/`)'
@@ -22,7 +22,7 @@ services:
       - 'traefik.http.services.client.loadbalancer.server.port=3000'
 
   admin-side:
-    image: ghcr.io/100bucksdev/bid-auto-admin-part:dev
+    image: ghcr.io/100bucksdev/bid-auto-admin-part:prod
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.admin.rule=PathPrefix(`/admin`)'
@@ -30,7 +30,7 @@ services:
       - 'traefik.http.services.admin.loadbalancer.server.port=80'
 
   user-side:
-    image: ghcr.io/100bucksdev/bid-auto-user-part:dev
+    image: ghcr.io/100bucksdev/bid-auto-user-part:prod
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.user.rule=PathPrefix(`/user`)'
