@@ -11,7 +11,7 @@ providers:
   docker:
     exposedByDefault: false
   file:
-    filename: "/etc/traefik/dynamic.yml"
+    directory: "/etc/traefik/dynamic"
     watch: true
 
 # Сертификаты Let's Encrypt
