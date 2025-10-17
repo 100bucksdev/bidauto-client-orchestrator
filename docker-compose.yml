@@ -8,6 +8,7 @@ services:
     volumes:
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - ./traefik/dynamic/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - ./traefik/letsencrypt:/letsencrypt:ro
 
   client-side:
     image: ghcr.io/100bucksdev/bid-auto-client-side:prod

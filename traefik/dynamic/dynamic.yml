@@ -1,22 +1,66 @@
 http:
   routers:
-    admin:
+    # HTTPS routers (terminate TLS and use ACME certs)
+    admin-https:
       rule: "Host(`demo.bidauto.online`) && PathPrefix(`/admin`)"
-      entryPoints: ["web"]
+      entryPoints:
+        - websecure
       service: admin
       priority: 30
+      tls:
+        certResolver: letsencrypt
 
-    user:
+    user-https:
       rule: "Host(`demo.bidauto.online`) && PathPrefix(`/user`)"
-      entryPoints: ["web"]
+      entryPoints:
+        - websecure
       service: user
       priority: 20
+      tls:
+        certResolver: letsencrypt
 
-    client:
+    client-https:
       rule: "Host(`demo.bidauto.online`) && PathPrefix(`/`)"
-      entryPoints: ["web"]
+      entryPoints:
+        - websecure
       service: client
       priority: 1
+      tls:
+        certResolver: letsencrypt
+
+    # HTTP routers only redirect to HTTPS
+    admin-http:
+      rule: "Host(`demo.bidauto.online`) && PathPrefix(`/admin`)"
+      entryPoints:
+        - web
+      service: noop@internal
+      priority: 30
+      middlewares:
+        - redirect-to-https
+
+    user-http:
+      rule: "Host(`demo.bidauto.online`) && PathPrefix(`/user`)"
+      entryPoints:
+        - web
+      service: noop@internal
+      priority: 20
+      middlewares:
+        - redirect-to-https
+
+    client-http:
+      rule: "Host(`demo.bidauto.online`) && PathPrefix(`/`)"
+      entryPoints:
+        - web
+      service: noop@internal
+      priority: 1
+      middlewares:
+        - redirect-to-https
+
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
 
   services:
     admin:
