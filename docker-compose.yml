@@ -1,3 +1,6 @@
+volumes:
+  traefik_letsencrypt:
+
 services:
   traefik:
     image: traefik:v3.5
