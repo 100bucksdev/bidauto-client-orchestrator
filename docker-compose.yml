@@ -1,14 +1,23 @@
 services:
   traefik:
-    image: traefik:v2.11
+    image: traefik:v3.5
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--providers.docker=true"                    # Enable Docker provider
+      - "--providers.docker.exposedbydefault=false"  # Require explicit labels
+      - "--entrypoints.web.address=:80"              # HTTP entrypoint
+      - "--entrypoints.websecure.address=:443"             # HTTPS entrypoint
+      - "--log.level=DEBUG"                          # Detailed logging
     ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
+      - "80:80"      # HTTP traffic
+      - "443:443"      # HTTPS traffic
+      - "8080:8080"  # Traefik dashboard
     volumes:
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./traefik/dynamic/dynamic.yml:/etc/traefik/dynamic.yml:ro
-      - ./traefik/letsencrypt:/letsencrypt:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+      - traefik_letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker socket access
 
   client-side:
     image: ghcr.io/100bucksdev/bid-auto-client-side:prod
