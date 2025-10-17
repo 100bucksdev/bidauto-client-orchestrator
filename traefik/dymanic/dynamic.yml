@@ -1,0 +1,35 @@
+http:
+  routers:
+    admin:
+      rule: "Host(`demo.bidauto.online`) && PathPrefix(`/admin`)"
+      entryPoints: ["web"]
+      service: admin
+      priority: 30
+
+    user:
+      rule: "Host(`demo.bidauto.online`) && PathPrefix(`/user`)"
+      entryPoints: ["web"]
+      service: user
+      priority: 20
+
+    client:
+      rule: "Host(`demo.bidauto.online`) && PathPrefix(`/`)"
+      entryPoints: ["web"]
+      service: client
+      priority: 1
+
+  services:
+    admin:
+      loadBalancer:
+        servers:
+          - url: "http://admin-side:80"
+
+    user:
+      loadBalancer:
+        servers:
+          - url: "http://user-side:80"
+
+    client:
+      loadBalancer:
+        servers:
+          - url: "http://client-side:3000"
